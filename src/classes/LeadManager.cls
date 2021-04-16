@@ -1,5 +1,5 @@
 @RestResource(urlMapping='/Leads/*')
-global with sharing class LeadManager {
+global with sharing class LeadManager extends LeadManagerHelper {
     @HttpGet
     global static Lead getLeadById() {
         try{
@@ -14,24 +14,38 @@ global with sharing class LeadManager {
             return null;
         }   
     }
-
     @HttpPost
-    global static String createTaskForLead(String lastname, String company) {
+    global static String createTaskForLead() {
         try{
-            Lead newLead = new Lead();
-            newLead.LastName = lastname;
-            newLead.Company = company;
-            insert newLead;
+            RestRequest req = RestContext.request;
+            String jsonBody = req.requestBody.toString();
+            Map<String, Object> body = (Map<String, Object>)JSON.deserializeUntyped(jsonBody); 
+
+            List<String> requiredFields_Lead = getRequiredFields('Lead');
+            List<String> requeredFields_Task = getRequiredFields('Task');
+
+            for(String requiredField : requiredFields_Lead){
+                if(!body.containsKey(requiredField)){
+                    String error = 'Not contain required field ('+ requiredField +')';
+                    return error;
+                }
+            }
             
+            Lead newLead = new Lead();
+            for(String bodyKey : body.keySet()){
+                newLead.put(bodyKey, body.get(bodyKey));
+            }
+            insert newLead;
+
             Task newTask = new Task();
-            newTask.Subject = 'Task for Lead:' + lastname;
+            newTask.Subject = 'Task for Lead:' + newLead.get('lastname');
             newTask.Case_Created__c = Date.today();
             newTask.WhoId = newLead.Id;
             insert newTask;
-    
-            return newTask.Id;
-        }catch(Exception ex){
-            return null;
+            return newLead.Id;
+        }catch(SObjectException sobjectExeprion){
+            return 'Error:  Illegal assignment!';
         }
+       
     }   
 }
