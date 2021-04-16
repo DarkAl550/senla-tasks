@@ -1,0 +1,12 @@
+<apex:page docType="html-5.0">
+    <apex:pageBlock title="TimeZone Component with JS">
+        <apex:pageBlockSection columns="1">
+            <c:TimeZone />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:pageBlock title="TimeZone Component with Apex Controller">
+        <apex:pageBlockSection columns="1">
+            <c:TimeZoneWithApexController />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,23 @@
+<apex:component >
+    <script>
+        function getTime(){
+            const timezone = document.getElementById('timeZoneInput').value;
+            const regex = /[+-]?([0-9]*[.])?[0-9]+/;
+            if(timezone.match(regex) && !isNaN(timezone)){
+                const dateNow = new Date;
+                console.log(dateNow);
+                const utc = dateNow.getTime() + (dateNow.getTimezoneOffset() * 60000);
+                const newDate = new Date(utc + (3600000*timezone));
+                return document.getElementById("result").innerText  = newDate.getHours()+':'+newDate.getMinutes()+':'+newDate.getSeconds();
+            }
+            return document.getElementById("result").innerText  = 'Invalid value!';
+        }
+    </script>
+    <div>
+        <label>Input TimeZone:</label>
+        <input id="timeZoneInput" type="text"/>
+        <button onclick="getTime()"> Get Time</button><p/>
+        <label id="result"></label>
+    </div>
+    
+</apex:component>
