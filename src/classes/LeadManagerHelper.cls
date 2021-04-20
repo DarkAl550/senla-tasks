@@ -14,7 +14,6 @@ public abstract class LeadManagerHelper {
                 requiredFields.add(field);
             }
         }
-        System.debug(requiredFields);
         return requiredFields;
     }
 }
