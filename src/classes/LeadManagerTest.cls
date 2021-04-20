@@ -35,6 +35,12 @@ public with sharing class LeadManagerTest {
         Map<String, Object> resultMap = (Map<String, Object>) JSON.deserializeUntyped(result);
         System.assertEquals('ERROR', resultMap.get('status'));
         System.assertEquals('Lead not found', resultMap.get('message'));
+        request.requestUri = 'https://senla-6f-dev-ed.my.salesforce.com/services/apexrest/Leads/00Q5g000002VxzXEAy';
+        RestContext.request = request;
+        result = LeadManager.getLeadById();
+        resultMap = (Map<String, Object>) JSON.deserializeUntyped(result);
+        System.assertEquals('UNKNOWN_ERROR', resultMap.get('status'));
+        System.assertEquals('Opps! Unknown error :/', resultMap.get('message'));
     }
     @isTest
     static void testCreateTaskForLead_Success(){
@@ -58,6 +64,7 @@ public with sharing class LeadManagerTest {
             System.assertEquals(createdTask.Case_Created__c, Date.today());
         }
         
+        
     }
     @isTest
     static void testCreateTaskForLead_Error(){
@@ -68,5 +75,12 @@ public with sharing class LeadManagerTest {
         Map<String, Object> resultMap = (Map<String, Object>) JSON.deserializeUntyped(result);
         System.assertEquals('ERROR', resultMap.get('status'));
         System.assertEquals('Task can\'t created! Lead id is not empty!', resultMap.get('message'));
+        request.requestUri = 'https://senla-6f-dev-ed.my.salesforce.com/services/apexrest/Leads/00Q5g000002VxzXEAy';
+        RestContext.request = request;
+        result = LeadManager.createTaskForLead(null);
+        resultMap = (Map<String, Object>) JSON.deserializeUntyped(result);
+        System.assertEquals('UNKNOWN_ERROR', resultMap.get('status'));
+        System.assertEquals('Opps! Unknown error :/', resultMap.get('message'));
+
     }
 }
