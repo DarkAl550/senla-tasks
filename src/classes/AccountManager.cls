@@ -11,20 +11,25 @@ public with sharing class AccountManager {
             account.Custom_Field2__c = dateNow.time();           
         }
         upsert accounts;
-        executeFlow_ContactFlowCreateTask(accountIds);
-    }
-    public static void executeFlow_ContactFlowCreateTask(List<Id> accountIds){
+        
         List<Contact> contacts = [
                                     SELECT Id
                                     FROM Contact
-                                    WHERE AccountId IN :accountIds
+                                    WHERE AccountId IN :accountIds AND AccountId != NULL
         ];
+        System.debug(contacts);
+        if(contacts.size() > 0 && !contacts.isEmpty()){
+            executeFlow_ContactFlowCreateTask(contacts);
+        }
+        
+    }
+    public static void executeFlow_ContactFlowCreateTask(List<Contact> contacts){
         List<Id> contactIds = new List<Id>();
         for(Contact contact : contacts){
             contactIds.add(contact.Id);
         }
         Map<String, Object> params = new Map<String, Object>();
-        params.put('RecordId', contactIds);
+        params.put('RecordId', contactIds[0]);
         Flow.Interview.Contact_Flow_Create_Task contactFlow = new Flow.Interview.Contact_Flow_Create_Task(params);
         contactFlow.start();  
     }
