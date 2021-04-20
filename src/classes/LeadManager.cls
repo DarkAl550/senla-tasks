@@ -45,7 +45,7 @@ global with sharing class LeadManager extends LeadManagerHelper {
             SalesforceMessage message = new SalesforceMessage('SUCCESS', JSON.serialize(newTask));
             return JSON.serialize(message);  
         }catch(System.StringException e){
-            SalesforceMessage error = new SalesforceMessage('ERROR', 'Lead not found');
+            SalesforceMessage error = new SalesforceMessage('ERROR', 'Task can\'t created! Lead id is not empty!');
             return JSON.serialize(error); 
         }catch(Exception e){
             SalesforceMessage error = new SalesforceMessage('UNKNOWN_ERROR', 'Opps! Unknown error :/');
