@@ -11,13 +11,12 @@ public with sharing class AccountManager {
             account.Custom_Field2__c = dateNow.time();           
         }
         upsert accounts;
-        
+
         List<Contact> contacts = [
                                     SELECT Id
                                     FROM Contact
                                     WHERE AccountId IN :accountIds AND AccountId != NULL
         ];
-        System.debug(contacts);
         if(contacts.size() > 0 && !contacts.isEmpty()){
             executeFlow_ContactFlowCreateTask(contacts);
         }
