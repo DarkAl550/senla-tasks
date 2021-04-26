@@ -51,6 +51,7 @@ public with sharing class ProductTriggerHandler extends TriggerHandler{
                 Auto_Created__c = true,
                 ActivityDate = Date.newInstance(Date.today().year(), Date.today().month(), 1),
                 Priority = 'High',
+                WhatId = account.Id,
                 Phone__c = account.Phone
             );
             newTask.RecordTypeId = taskRecordType.Id;
