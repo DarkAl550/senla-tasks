@@ -2,7 +2,7 @@ public with sharing class OpportunityBatch implements Database.Batchable<sObject
     public Integer recordsProcessed = 0;
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, StageName '+
+            'SELECT Id, StageName, CloseDate '+
             'FROM Opportunity '+
             'WHERE CloseDate < LAST_MONTH AND StageName != \'Close Won\' AND StageName != \'Close Lost\''
         );
@@ -11,6 +11,7 @@ public with sharing class OpportunityBatch implements Database.Batchable<sObject
         for(Opportunity opportunity : opportunites){
             opportunity.StageName = 'Close Won';
             opportunity.CloseDate = Date.today();
+            recordsProcessed += 1;
         }
         update opportunites;
     }
