@@ -3,7 +3,7 @@ public with sharing class NBRBService extends ObjectSchemaManager {
         public String Cur_Abbreviation { get; set; }
         public Decimal Cur_OfficialRate { get; set; }
     }
-
+    @future(callout=true)
     public static void getRate(){
         HttpRequest request = new HttpRequest();
         request.setEndpoint( getAPI() );
