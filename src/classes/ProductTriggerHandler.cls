@@ -20,12 +20,12 @@ public with sharing class ProductTriggerHandler extends TriggerHandler{
         ];
         List<Id> opportunityIds = new List<Id>();
         for(OpportunityLineItem opportunityProduct : opportunityProducts){
-            opportunityIds.add(opportunityProduct.Id);
+            opportunityIds.add(opportunityProduct.OpportunityId);
         }
         List<Opportunity> opportunites = [
-                                    SELECT Id, AccountId
-                                    FROM Opportunity
-                                    WHERE Id IN :opportunityIds
+                                            SELECT Id, AccountId
+                                            FROM Opportunity
+                                            WHERE Id IN :opportunityIds
         ];
         List<Id> accountsIds = new List<Id>();
         for(Opportunity opportunity : opportunites){
@@ -36,12 +36,14 @@ public with sharing class ProductTriggerHandler extends TriggerHandler{
                                     FROM Account
                                     WHERE Id IN :accountsIds
         ];
+
         if(accounts.isEmpty()) return;
+
         RecordType taskRecordType = [
-                                        SELECT Id,SobjectType,Name 
-                                        FROM RecordType
-                                        WHERE Name ='Call' and SobjectType ='Task' 
-                                        LIMIT 1
+                                    SELECT Id,SobjectType,Name 
+                                    FROM RecordType
+                                    WHERE Name = 'Call' and SobjectType = 'Task' 
+                                    LIMIT 1
         ];
         List<Task> newTasks = new List<Task>();
         for(Account account : accounts){
@@ -51,7 +53,6 @@ public with sharing class ProductTriggerHandler extends TriggerHandler{
                 Auto_Created__c = true,
                 ActivityDate = Date.newInstance(Date.today().year(), Date.today().month(), 1),
                 Priority = 'High',
-                WhatId = account.Id,
                 Phone__c = account.Phone
             );
             newTask.RecordTypeId = taskRecordType.Id;
