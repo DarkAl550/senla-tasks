@@ -1,9 +1,9 @@
 ({
-    getAttachment : function(component, event) {
-        var action = component.get("c.getProductAttachments");
+    getAttachment : function(component) {
+        let action = component.get("c.getProductAttachments");
         action.setParams({ productId : component.get("v.recordId") });
         action.setCallback(this, function(response) {
-            var state = response.getState();
+            const state = response.getState();
             if (state === "SUCCESS") {
                 let result = response.getReturnValue();
                 let productImages = [];
@@ -13,9 +13,8 @@
                     );
                 }
                 component.set("v.productImages", productImages);
-                console.log(component.get("v.productImages"));
             }else if (state === "ERROR") {
-                var errors = response.getError();
+                const errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {
                         console.log("Error message: " + 

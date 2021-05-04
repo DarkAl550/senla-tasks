@@ -1,5 +1,5 @@
 ({
     doInit : function(component, event, helper) {
-        helper.getAttachment(component, event);
+        helper.getAttachment(component);
     }
 })
