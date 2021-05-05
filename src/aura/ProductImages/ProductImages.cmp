@@ -1,27 +1,33 @@
 <aura:component implements="force:lightningQuickAction,force:hasRecordId,flexipage:availableForAllPageTypes" controller="ProductImagesController">
     <aura:attribute name="recordId" type="String"/>
     <aura:attribute name="productImages" type="List"/>
+    <aura:attribute name="urlToAttachment" type="String"/>
 
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
 
     <lightning:card title="Product Images">
         <div class="slds-grid slds-gutter slds-p-around_medium">
             <div class="slds-col slds-size_1-of-3 slds-text-align_center">
-                <aura:iteration items="{!v.productImages}" var="attachment">
-                    <p>{!attachment.name}</p>
-                </aura:iteration>
+                <ui:scrollerWrapper class="scroller">
+                    <aura:iteration items="{!v.productImages}" var="attachment">
+                        <div class="slds-box slds-m-around_small name-box" id="{!attachment.name}" aura:id="{!attachment.name}" onclick="{!c.selectImageName}" >
+                            <a href="{!attachment.url}" class="name-box">
+                                {!attachment.name}
+                            </a>
+                        </div>
+                    </aura:iteration>
+                </ui:scrollerWrapper>
             </div>
             <div class="slds-col slds-size_2-of-3">
                 <div class="slds-size_2-of-3 slds-align_absolute-center">
                     <lightning:carousel disableAutoRefresh="false" disableAutoScroll="false">
                         <aura:iteration items="{!v.productImages}" var="image">
-                            <lightning:carouselImage src="{!image.url}"></lightning:carouselImage>
+                            <lightning:carouselImage src="{!image.url}" href="{!image.url}" header="{!image.name}"
+                            ></lightning:carouselImage>
                         </aura:iteration>
                     </lightning:carousel>
                 </div>
-                
             </div>
         </div>
     </lightning:card>
-    
 </aura:component>

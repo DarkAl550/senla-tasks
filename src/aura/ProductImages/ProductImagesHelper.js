@@ -13,6 +13,7 @@
                     );
                 }
                 component.set("v.productImages", productImages);
+                //component.set("v.urlToAttachment", "https://senla-6f-dev-ed.lightning.force.com/lightning/r/CombinedAttachment/"+component.get("v.recordId")+"/related/CombinedAttachments/view");
             }else if (state === "ERROR") {
                 const errors = response.getError();
                 if (errors) {
