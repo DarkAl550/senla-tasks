@@ -1,0 +1,35 @@
+<template>
+    <div >
+        <div if:true={completeSendQuestionnaire}>
+            <div class="slds-align_absolute-center">
+                <div class="slds-text-heading_large">Ваша оценка успешно отправлена!</div>
+            </div>
+            <div class="slds-align_absolute-center">
+                <div>Теперь вы можете закрыть страницу.</div>
+            </div>
+        </div>
+        <div if:false={completeSendQuestionnaire} class="slds-text-align_center slds-grid slds-gutter">
+            <div class="slds-col slds-size_1-of-3"></div>
+            <div class="slds-col slds-size_1-of-3">
+                <div class="sdls-m-aroud_small">
+                    <div class="slds-p-around_small" onchange={handleRatingChanges}>
+                        <lightning-slider label="Оценка" min="1" max="5" step="1" value={rating}></lightning-slider>
+                    </div>
+                    <div class="slds-p-around_small" onchange={handleEmailFieldChanges}>
+                        <lightning-input type="email" label="Email" value={email}></lightning-input>
+                    </div>
+                    <div if:true={errorMessage} style="background-color: rgb(191, 2, 1);">
+                        <div style="color: white;">{message}</div>
+                    </div>
+                    <div class="slds-p-around_small" onchange={handlDescriptionFieldChanges}>
+                        <lightning-textarea name="input" label="Комментарий" placeholder="Оставьте свой комментарий" value={descriptoin}></lightning-textarea>
+                    </div>
+                    <div>
+                        <lightning-button variant="brand" label="Оставить отзыв" title="Оставить отзыв" onclick={handleButtonClick} class="slds-align_absolute-center"></lightning-button>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-3"></div>
+        </div> 
+    </div>  
+</template>
