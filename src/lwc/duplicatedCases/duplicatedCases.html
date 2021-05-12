@@ -1,4 +1,7 @@
 <template>
+    <div if:true={isSpinner}>
+        <lightning-spinner alternative-text="Loading" size="large" variant="brand"></lightning-spinner>
+    </div>
     <lightning-card  title="Duplicated Cases">
         <template if:true={isModalOpen}>
             <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
@@ -27,9 +30,11 @@
         <div style="height: 300px;">
             <lightning-datatable
                     key-field="id"
-                    data={cases.data}
+                    data={duplicatedCases}
                     columns={columns}
-                    onrowaction={handleAction} >
+                    onrowaction={handleAction}
+                    hide-checkbox-column
+                    show-row-number-column >
             </lightning-datatable>
         </div>
     </lightning-card>

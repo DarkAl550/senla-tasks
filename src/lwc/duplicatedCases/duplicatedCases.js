@@ -8,12 +8,13 @@ import sendBellNotification from '@salesforce/apex/DuplicatedCasesController.sen
 
 export default class DuplicatedCases extends LightningElement {
     @api recordId;
-    cases;
+    duplicatedCases;
     @track isModalOpen = false;
     @track isSendNotification = false;
     @track childId;
     @track ownerId;
     @track caseNumber;
+    @track isSpinner = true;
     columns = [
         { label: 'CaseNumber', fieldName: 'CaseNumber' },
         { label: 'Origin', fieldName: 'Origin' },
@@ -27,7 +28,10 @@ export default class DuplicatedCases extends LightningElement {
     ];
 
     @wire(getDuplicatedCases, { recordId : '$recordId' })
-    cases;
+    cases({error,data}) {
+        this.isSpinner = false;
+        this.duplicatedCases = data;
+    };
 
     handleAction(event){
         let action = event.detail.action;
@@ -36,19 +40,24 @@ export default class DuplicatedCases extends LightningElement {
                 let row = event.detail.row;
                 this.childId = row.Id;
                 this.caseNumber = row.CaseNumber;
-                console.log(JSON.stringify(event.detail));
-                
+                this.isSpinner = true;
                 checkRecordInQueue({ queueId: row.Owner.Id })
                 .then(result => {
                     console.log(result);
                     if(!result && (row.Status == 'In progress' || row.Status == 'On Hold')){
                         this.ownerId = row.Owner.Id;
+                        this.isSpinner = false;
                         this.isModalOpen = true;
                         return;
                     }
-                    mergingCases({ parentId: this.recordId, childId: row.Id});
-                    refreshApex(this.cases);
-
+                    mergingCases({ parentId: this.recordId, childId: row.Id})
+                    .then(result=>{
+                        this.isSpinner = false;
+                        refreshApex(this.duplicatedCases);
+                    })
+                    .catch(error => {
+                        this.error = error;
+                    })
                 })
                 .catch(error => {
                     this.error = error;
@@ -57,17 +66,20 @@ export default class DuplicatedCases extends LightningElement {
         }
     }
     merging(){
+        this.isSpinner = true;
         if(this.isSendNotification){
             sendBellNotification({ownerId:this.ownerId, caseNumber:this.caseNumber, caseId:this.childId});
         }
         mergingCases({ parentId: this.recordId, childId: this.childId})
         .then(result =>{
+            this.isSpinner = false;
             this.isModalOpen = false;
+            refreshApex(this.duplicatedCases);
         })
         .catch(error =>{
             this.error = error;
         })
-        refreshApex(this.cases);
+        
     }
     handleCheckboxValue(event){
         this.isSendNotification = event.target.checked;

@@ -5,6 +5,7 @@ public with sharing class DuplicatedCasesController {
                                     SELECT Id, Subject, SuppliedEmail, Reason
                                     FROM Case
                                     WHERE Id = :recordId
+                                        AND Status != 'Closed'
         ];
         List<Case> duplicatedCases = [
                                         SELECT Id, CaseNumber, Origin, SuppliedEmail, Status, Reason, Owner.Name, OwnerId
@@ -73,14 +74,21 @@ public with sharing class DuplicatedCasesController {
     }
     private static void setEmailMessages(String parentId, String childId){
         List<EmailMessage> emailMessages = [
-                                            SELECT Id, ParentId 
+                                            SELECT Id, ParentId, FromAddress, ToAddress, Subject, TextBody
                                             FROM EmailMessage 
                                             WHERE ParentId = :childId
         ];
+        List<EmailMessage> newEmailMessages = new List<EmailMessage>();
         for(EmailMessage emailMessage : emailMessages){
-            emailMessage.ParentId = parentId;
+            EmailMessage newEmailMessage = new EmailMessage();
+            newEmailMessage.FromAddress = emailMessage.FromAddress;
+            newEmailMessage.ToAddress = emailMessage.ToAddress;
+            newEmailMessage.Subject = emailMessage.Subject;
+            newEmailMessage.TextBody= emailMessage.TextBody;
+            newEmailMessage.ParentId = parentId;
+            newEmailMessages.add(newEmailMessage);
         }
-        update emailMessages;
+        insert newEmailMessages;
     }
 
 }
