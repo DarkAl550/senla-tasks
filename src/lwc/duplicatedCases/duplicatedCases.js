@@ -73,8 +73,8 @@ export default class DuplicatedCases extends LightningElement {
         mergingCases({ parentId: this.recordId, childId: this.childId})
         .then(result =>{
             this.isSpinner = false;
-            this.isModalOpen = false;
             refreshApex(this.duplicatedCases);
+            this.isModalOpen = false;
         })
         .catch(error =>{
             this.error = error;
