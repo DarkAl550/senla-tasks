@@ -8,11 +8,8 @@ public with sharing class NBRBServiceTest {
         NBRBService.getRate();
         Test.stopTest();
         
-        List<Rates__c> rates = [
-                                SELECT USD__c 
-                                FROM Rates__c
-        ];
-        System.assertEquals(1.9928, rates[0].USD__c);
+        Rates__c rates = Rates__c.getOrgDefaults();
+        System.assertEquals(1.9928, rates.USD__c);
     }
     @isTest
     static void testGetAPI(){

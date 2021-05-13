@@ -12,7 +12,7 @@ public with sharing class NBRBService extends ObjectSchemaManager {
         HttpResponse response = new Http().send(request);
         List<Rate> rates = (List<Rate>) JSON.deserialize(response.getBody(), List<Rate>.class);
 
-        Rates__c ratesSetting = Rates__c.getInstance(userinfo.getProfileId());
+        Rates__c ratesSetting = Rates__c.getOrgDefaults();
         Map<String,Schema.SObjectField> ratesFields = getFields('Rates__c');
         for(Rate rate : rates){
             for(String field : ratesFields.keyset()){
