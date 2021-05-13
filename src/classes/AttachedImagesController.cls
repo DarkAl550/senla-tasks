@@ -1,10 +1,10 @@
-public with sharing class ProductImagesController {
+public with sharing class AttachedImagesController {
     @AuraEnabled
-    public static List<Attachment> getProductAttachments(String productId){
+    public static List<Attachment> getAttachments(String recordId){
         List<Attachment> attachments = [
                                             SELECT Id, Name 
                                             FROM Attachment
-                                            WHERE ParentId = :productId
+                                            WHERE ParentId = :recordId
         ];
         return attachments;
     }

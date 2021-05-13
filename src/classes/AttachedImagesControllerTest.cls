@@ -1,5 +1,5 @@
 @isTest
-public with sharing class ProductImagesControllerTest {
+public with sharing class AttachedImagesControllerTest {
     @testSetup
     static void setup(){
         Product2 product = new Product2(
@@ -22,7 +22,7 @@ public with sharing class ProductImagesControllerTest {
                             FROM Product2
                             LIMIT 1
         ];
-        List<Attachment> attachments = ProductImagesController.getProductAttachments(product.Id);
+        List<Attachment> attachments = AttachedImagesController.getAttachments(product.Id);
 
         System.assert(attachments.size() > 0);
         for(Attachment attachment : attachments){
