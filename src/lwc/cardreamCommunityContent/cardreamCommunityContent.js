@@ -16,7 +16,7 @@ export default class CardreamCommunityContent extends LightningElement {
     @track rateOptions = [];
     @track isAllProducts = false;
     @track isModalOpen = false;
-    @track selectedProduct ={};
+    @track selectedProduct = {};
     @track images = [];
     @track isLoadedProduct = false;
     @track isFormError = false;
@@ -30,7 +30,6 @@ export default class CardreamCommunityContent extends LightningElement {
         this.getRatesAbriviature();   
         window.addEventListener('scroll', (event) => {this.handleScroll(event)});
     }
-
     getProductsFromApex(){
         getProducts({ searchValue: this.searchValue, price: this.sliderValue, rate: this.selectedRate, loadedRecords:this.products.length})
         .then(result => {
@@ -54,28 +53,23 @@ export default class CardreamCommunityContent extends LightningElement {
             this.error = error;
         });
     }
-
     getRatesAbriviature(){
         getRateAbriviatures()
         .then(result =>{
-            console.log(result);
             this.rateOptions = [];
             for(let i=0; i<result.length; i++){
                 this.rateOptions.push(
                     { label: result[i], value: result[i] + '__c' }
                 );
             }
-            console.log(this.rateOptions);
         })
         .catch(error => {
             this.error = error;
-            console.log(this.error);
         });
     }
     handleSliderChanges(event){
         this.sliderValue = event.target.value;
     }
-
     handleKeyUp(event) {
         const isEnterKey = event.keyCode === 13;
         if (isEnterKey) {
@@ -85,18 +79,15 @@ export default class CardreamCommunityContent extends LightningElement {
             this.getProductsFromApex();
         }
     }
-
     handleComboboxChanges(event){
         this.selectedRate = event.detail.value;
         getRateAttribute({abriviature: this.selectedRate})
         .then(result=>{
-            
             for(let i=0; i<this.products.length; i++){
                 if(this.rateValue == 1) this.products[i].price = Math.round(this.products[i].price / result);
                 else this.products[i].price = Math.round(this.products[i].price * this.rateValue / result);
             }
             this.rateValue = result;
-            console.log(this.products);
         })
         .catch(error =>{
             this.error = error;
@@ -108,13 +99,10 @@ export default class CardreamCommunityContent extends LightningElement {
         this.images = [];
         this.isLoadedProduct = false;
         this.isModalOpen = true;
-        console.log(productId.split("-")[0]);
         getSelectedProduct({productId : productId.split("-")[0]})
         .then(result =>{
-            console.log(result);
             if(result.length) {
                 this.selectedProduct = result[0];
-                console.log(this.selectedProduct);
                 try{
                     for(let i=0; i<this.selectedProduct.Attachments.length; i++){
                         this.images.push(
@@ -124,7 +112,6 @@ export default class CardreamCommunityContent extends LightningElement {
                 }catch(e){
                     this.images.push(NOIMAGE);
                 }
-                
             }
             this.isLoadedProduct = true;
         })
@@ -132,20 +119,16 @@ export default class CardreamCommunityContent extends LightningElement {
             this.error = error;
         })
     }
-    
     handleScroll(event) { 
         const container = event.target.body
         const {clientHeight, scrollHeight, scrollY: scrollTop} = container
-
         if (clientHeight + scrollY >= scrollHeight) {
             this.getProductsFromApex();
         }
     }
-
     closeModal(){
         this.isModalOpen = false;
     }
-
     setPriority(){
         let reason = this.template.querySelector('[data-id="reason"]');
         let priority = this.template.querySelector('[data-id="priority"]');
@@ -161,6 +144,5 @@ export default class CardreamCommunityContent extends LightningElement {
             this.isFormError = true;
             email.value = "";
         }
-    }
-        
+    }     
 }

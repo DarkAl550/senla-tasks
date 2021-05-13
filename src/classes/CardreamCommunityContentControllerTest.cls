@@ -20,7 +20,7 @@ public with sharing class CardreamCommunityContentControllerTest {
     }
     @isTest
     static void testGetProducts(){
-        List<Product2> products = CardreamCommunityContentController.getProducts('', 10, 0);
+        List<Product2> products = CardreamCommunityContentController.getProducts('test', 10, 0);
         System.assert(products.size() == 8);
         for(Integer i=0; i<products.size(); i++){
             System.assertEquals('Test'+i, products[i].Name);

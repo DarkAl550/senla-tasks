@@ -5,7 +5,6 @@ import checkRecordInQueue from '@salesforce/apex/DuplicatedCasesController.check
 import mergingCases from '@salesforce/apex/DuplicatedCasesController.mergingCases';
 import sendBellNotification from '@salesforce/apex/DuplicatedCasesController.sendBellNotification';
  
-
 export default class DuplicatedCases extends LightningElement {
     @api recordId;
     duplicatedCases;
@@ -31,8 +30,7 @@ export default class DuplicatedCases extends LightningElement {
     cases({error,data}) {
         this.isSpinner = false;
         this.duplicatedCases = data;
-    };
-
+    }
     handleAction(event){
         let action = event.detail.action;
         switch (action.name) {
@@ -43,7 +41,6 @@ export default class DuplicatedCases extends LightningElement {
                 this.isSpinner = true;
                 checkRecordInQueue({ queueId: row.Owner.Id })
                 .then(result => {
-                    console.log(result);
                     if(!result && (row.Status == 'In progress' || row.Status == 'On Hold')){
                         this.ownerId = row.Owner.Id;
                         this.isSpinner = false;
@@ -79,7 +76,6 @@ export default class DuplicatedCases extends LightningElement {
         .catch(error =>{
             this.error = error;
         })
-        
     }
     handleCheckboxValue(event){
         this.isSendNotification = event.target.checked;
