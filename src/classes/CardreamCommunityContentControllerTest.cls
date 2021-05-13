@@ -4,10 +4,10 @@ public with sharing class CardreamCommunityContentControllerTest {
     static void setup(){
         List<Product2> products = new List<Product2>();
         for(Integer i=0; i<10; i++){
-            products.add(new Product2(
-                Name='Test'+i,
-                Year__c=Date.today().year(),
-                Price__c=1.11,
+            products.add( new Product2(
+                Name = 'Test'+i,
+                Year__c = Date.today().year(),
+                Price__c = 1.11,
                 IsActive = true 
             ));
         }

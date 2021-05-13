@@ -12,8 +12,12 @@ public with sharing class CardreamCommunityContentController extends ObjectSchem
     }
     @AuraEnabled
     public static List<Product2> getProducts(String searchValue, Integer price, Integer loadedRecords){
-        String query = 'SELECT Id, Name, Price__c, Year__c, (SELECT Id, Name FROM Attachments) FROM Product2 WHERE IsActive = true ';
-        if(!String.isEmpty(searchValue)) query += 'AND Name LIKE \'%' + searchValue + '%\' ';
+        String query = 'SELECT Id, Name, Price__c, Year__c, '+
+                        '(SELECT Id, Name FROM Attachments) '+
+                        'FROM Product2 WHERE IsActive = true ';
+        if(!String.isEmpty(searchValue)) {
+            query += 'AND Name LIKE \'%' + searchValue + '%\' ';
+        }
         query += 'AND Price__c < '+price;
         query += ' ORDER BY Name ASC LIMIT 8 OFFSET '+loadedRecords;
         List<Product2> products = Database.query(query);

@@ -1,14 +1,14 @@
 public with sharing class ProductTriggerHandler{
     public static void afterUpdate(){
-        List<Id> unactiveProductIds = new List<Id>();
+        List<Id> unActiveProductIds = new List<Id>();
         for(sObject obj : Trigger.new){
             Product2 product = (Product2) obj;
             if(!product.IsActive){
-                unactiveProductIds.add(product.Id);
+                unActiveProductIds.add(product.Id);
             }
         }
-        if(!unactiveProductIds.isEmpty()){
-            createTaskForOpportunity(unactiveProductIds);
+        if(!unActiveProductIds.isEmpty()){
+            createTaskForOpportunity(unActiveProductIds);
         }
     }
 

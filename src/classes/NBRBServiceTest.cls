@@ -3,11 +3,9 @@ public with sharing class NBRBServiceTest {
     @isTest
     static void testGetRate() {
         Test.setMock(HttpCalloutMock.class, new NBRBServiceMock());
-
         Test.startTest();
         NBRBService.getRate();
         Test.stopTest();
-        
         Rates__c rates = Rates__c.getOrgDefaults();
         System.assertEquals(1.9928, rates.USD__c);
     }

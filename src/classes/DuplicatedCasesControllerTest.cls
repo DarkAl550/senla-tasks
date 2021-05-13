@@ -16,6 +16,14 @@ public with sharing class DuplicatedCasesControllerTest {
             testCases.add(testCase);
         }
         insert testCases;
+
+        EmailMessage emailMessage= new EmailMessage();
+        emailMessage.FromAddress='test@test.com';
+        emailMessage.ToAddress = 'test@test.te';
+        emailMessage.Subject = 'Opt Out Test Message';
+        emailMessage.TextBody= 'This is the message body BR-Interno.';
+        emailMessage.ParentId=testCases[1].id;
+        insert emailMessage; 
     }
     @isTest
     static void testGetDuplicatedCases(){
@@ -70,16 +78,18 @@ public with sharing class DuplicatedCasesControllerTest {
                                     FROM Case
                                     LIMIT 2
         ];
-        EmailMessage emailMessage= new EmailMessage();
-        emailMessage.FromAddress='test@test.com';
-        emailMessage.ToAddress = 'test@test.te';
-        emailMessage.Subject = 'Opt Out Test Message';
-        emailMessage.TextBody= 'This is the message body BR-Interno.';
-        emailMessage.ParentId=testCases[1].id;
-        insert emailMessage;   
+          
         Test.startTest();
         DuplicatedCasesController.mergingCases(testCases[0].Id, testCases[1].Id);
         Test.stopTest();
+        List<EmailMessage> emailMessages = [
+                            SELECT Id, Subject
+                            FROM EmailMessage
+                            WHERE ParentId = :testCases[0].Id
+        ];
+        for(EmailMessage em : emailMessages){
+            System.assertEquals('Opt Out Test Message', em.Subject);
+        }
         List<Case> mergedCases = [
                                     SELECT Id, Status
                                     FROM Case

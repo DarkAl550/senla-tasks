@@ -32,14 +32,12 @@ public with sharing class DuplicatedCasesController {
     }
     @AuraEnabled
     public static void sendBellNotification(String ownerId, String caseNumber, String caseId){
-        List<FeedItem> notifications = new List<FeedItem>();
         FeedItem notification = new FeedItem();
         notification.ParentId = ownerId;
         notification.Body = 'Внимание: кейс  '+caseNumber+' был закрыт как дубликат.';
         notification.Title = 'Case was closed!';
         notification.LinkUrl = '/lightning/r/Case/' + caseId + '/view';
-        notifications.add(notification);
-        insert notifications;                
+        insert notification;                
     }
     @AuraEnabled
     public static void mergingCases(String parentId, String childId){
@@ -55,10 +53,14 @@ public with sharing class DuplicatedCasesController {
         ][0];
         parentCase.Description += '\n----//----\n' + childCase.Description;
         parentCase.Priority = setPriority(parentCase.Priority, childCase.Priority);
-        parentCase.AccountId = (parentCase.AccountId != null) ? parentCase.AccountId : childCase.AccountId;
-        parentCase.Lead__c = (parentCase.Lead__c != null) ? parentCase.Lead__c : childCase.Lead__c;
-        parentCase.Country__c = (parentCase.Country__c != null) ? parentCase.Country__c : childCase.Country__c;
-        parentCase.SuppliedName = (parentCase.SuppliedName != null) ? parentCase.SuppliedName : childCase.SuppliedName;
+        parentCase.AccountId = (parentCase.AccountId != null) 
+                                    ? parentCase.AccountId : childCase.AccountId;
+        parentCase.Lead__c = (parentCase.Lead__c != null) 
+                                    ? parentCase.Lead__c : childCase.Lead__c;
+        parentCase.Country__c = (parentCase.Country__c != null) 
+                                    ? parentCase.Country__c : childCase.Country__c;
+        parentCase.SuppliedName = (parentCase.SuppliedName != null) 
+                                    ? parentCase.SuppliedName : childCase.SuppliedName;
         update parentCase;
         childCase.ParentId = parentCase.Id;
         childCase.Status = 'Closed';
@@ -73,22 +75,18 @@ public with sharing class DuplicatedCasesController {
         return parentPriority;
     }
     private static void setEmailMessages(String parentId, String childId){
-        List<EmailMessage> emailMessages = [
+        List<EmailMessage> childEmailMessages = [
                                             SELECT Id, ParentId, FromAddress, ToAddress, Subject, TextBody
                                             FROM EmailMessage 
                                             WHERE ParentId = :childId
         ];
-        List<EmailMessage> newEmailMessages = new List<EmailMessage>();
-        for(EmailMessage emailMessage : emailMessages){
-            EmailMessage newEmailMessage = new EmailMessage();
-            newEmailMessage.FromAddress = emailMessage.FromAddress;
-            newEmailMessage.ToAddress = emailMessage.ToAddress;
-            newEmailMessage.Subject = emailMessage.Subject;
-            newEmailMessage.TextBody= emailMessage.TextBody;
-            newEmailMessage.ParentId = parentId;
-            newEmailMessages.add(newEmailMessage);
+        List<EmailMessage> parentEmailMessages = new List<EmailMessage>();
+        for(EmailMessage emailMessage : childEmailMessages){
+            EmailMessage parentEmailMessage = emailMessage.clone();
+            parentEmailMessage.ParentId = parentId;
+            parentEmailMessages.add(parentEmailMessage);
         }
-        insert newEmailMessages;
+        insert parentEmailMessages;
     }
 
 }
