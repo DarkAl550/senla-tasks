@@ -1,0 +1,144 @@
+<template>
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{selectedProduct.Name}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div if:false={isLoadedProduct} class="slds-text-align_center">
+                        <img width="200" src={spinner}/>
+                    </div>
+                    <div if:true={isLoadedProduct}>
+                        <div class="slds-align_absolute-center slds-size_3-of-4">
+                            <lightning-carousel>
+                                <template for:each={images} for:item="image">
+                                    <lightning-carousel-image
+                                        key={image}
+                                        src={image}
+                                        href = "javascript:void(0);">
+                                    </lightning-carousel-image>
+                                </template>
+                            </lightning-carousel>
+                        </div>
+                        <div class="slds-text-heading_medium slds-grid slds-gutter slds-m-around_small">
+                            <div class="slds-col slds-text-align_left">Year: {selectedProduct.Year__c}</div>
+                            <div class="slds-col slds-text-align_right">Price: {selectedProduct.Price__c}</div>
+                        </div>
+                        <div class="slds-text-heading_medium slds-m-around_small slds-text-align_center">Description</div>
+                        <div class="slds-box">{selectedProduct.Description}</div>
+                    </div>
+
+                </div>
+                
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <div class="slds-grid slds-gutter slds-p-around_small" onscroll={handleScroll}>
+        <div class="slds-col slds-size_3-of-4">
+            <div class="slds-grid slds-gutter ">
+                <div class="slds-col slds-size_1-of-3">
+                    <label>Price</label>
+                    <div class="slds-align_absolute-center">
+                        <span class="slds-m-right_small">0</span>
+                        <input type="range" min="1" max="100000" value={sliderValue} class="slider" id="myRange" onchange={handleSliderChanges}/>
+                        <span class="slds-m-left_small">{sliderValue}</span>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4 slds-align_absolute-center">
+                    <lightning-combobox
+                        name="progress"
+                        label="Rate"
+                        value={selectedRate}
+                        placeholder="Select Rate"
+                        options={rateOptions}
+                        onchange={handleComboboxChanges} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-3 slds-text-align_center" onkeyup={handleKeyUp}>
+                    <div class="search">
+                        <input type="search" id="search" placeholder="Search..."/>
+                        <i class="fa fa-search">
+                            <img width="40px" src={searchIcon}/>
+                        </i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slds-text-align_center">
+                <lightning-layout multiple-rows>
+                    <template for:each={products} for:item='product'>
+                        <div key ={product.id} class="slds-m-around_x-small product-card">
+                            <lightning-layout-item size="4">
+                                <div class="product-item" style="height: 300px; width: 200px;" id={product.id} onclick={handleOnProductClick}>
+                                    <div >
+                                        <img id={product.id} class="product-image" src={product.imageUrl}/>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <p id={product.id}>{product.name}</p>
+                                        <lightning-formatted-number id={product.id} value={product.price} maximum-fraction-digits="2"></lightning-formatted-number>
+                                        <p id={product.id}>{product.year}</p>
+                                    </div> 
+                                </div>
+                            </lightning-layout-item>
+                        </div>
+                    </template>
+                </lightning-layout>
+            </div>
+            <div if:true={isAllProducts} class="slds-text-align_center">
+                <div class="slds-text-heading_medium">It's all products!</div>
+            </div>
+            <div if:false={isAllProducts} class="slds-text-align_center">
+                <img width="200" src={spinner}/>
+            </div>
+            
+
+        </div>
+        <div class="slds-col slds-size_1-of-4 slds-box slds-text-align_right" style="height: 400px;">
+            <div class="slds-text-heading_medium "><b>Связаться с нами</b></div>
+            <form action="https://webto.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8" method="POST">
+                <input type=hidden name="orgid" value="00D5g000004jmN1">
+                <input type=hidden name="retURL" value="https://car-dream-developer-edition.ap24.force.com/">
+
+                <br>
+                <div if:true={isFormError} style="color:red;">{errorMessage}</div>
+                <label for="email" >Email<span style="color:red;">*</span></label><br>
+                <input data-id="email" id="email" maxlength="80" name="email" size="20" type="text" required onchange={emailValid}/>
+                <br>
+                <label for="reason" >Категория<span style="color:red;">*</span></label><br>
+                <select data-id="reason" id="reason" name="reason" required onchange={setPriority}>
+                    <option value="">--None--</option>
+                    <option value="Financial Claim" >Financial Claim</option>
+                    <option value="General Question">General Question</option>
+                    <option value="Insurance">Insurance</option>
+                </select>
+                <br>
+                <div class="slds-hide">
+                    <label for="priority">Priority</label><br>
+                    <select data-id="priority" id="priority" name="priority">
+                        <option value="">--None--</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select><br>
+                </div>
+                
+                
+                <label for="description">Описание обращения</label><br>
+                <textarea name="description" required></textarea><br>
+                
+                <input type="hidden"  id="external" name="external" value="1" /><br>
+                
+                <button type="submit">Отправить</button>
+                
+                </form>
+        </div>
+    </div>
+</template>
