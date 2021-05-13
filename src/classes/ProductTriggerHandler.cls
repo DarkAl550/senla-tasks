@@ -1,5 +1,5 @@
-public with sharing class ProductTriggerHandler extends TriggerHandler{
-    protected override void afterUpdate(){
+public with sharing class ProductTriggerHandler{
+    public static void afterUpdate(){
         List<Id> unactiveProductIds = new List<Id>();
         for(sObject obj : Trigger.new){
             Product2 product = (Product2) obj;
