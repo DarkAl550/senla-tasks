@@ -1,0 +1,25 @@
+<template>
+    <div if:true={isSpinner}>
+        <lightning-spinner alternative-text="Loading" size="large" variant="brand"></lightning-spinner>
+    </div>
+    <lightning-card  title="Duplicated Cases">
+        <template if:true={isModalOpen}>
+            <c-case-modal 
+                owner={ownerId}
+                number={caseNumber}
+                child={childId}
+                record={recordId}
+                onchild={haldleChild}></c-case-modal>
+        </template>
+        <div style="height: 300px;">
+            <lightning-datatable
+                    key-field="id"
+                    data={duplicatedCases}
+                    columns={columns}
+                    onrowaction={handleAction}
+                    hide-checkbox-column
+                    show-row-number-column >
+            </lightning-datatable>
+        </div>
+    </lightning-card>
+</template>

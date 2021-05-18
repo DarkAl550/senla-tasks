@@ -1,0 +1,66 @@
+<template>
+    <template if:true={isModalOpen}>
+        <c-card onchild={haldleChild} product={productId}></c-card>
+    </template>
+    <div class="slds-grid slds-gutter slds-p-around_small" onscroll={handleScroll}>
+        <div class="slds-col slds-size_3-of-4">
+            <div class="slds-grid slds-gutter ">
+                <div class="slds-col slds-size_1-of-3">
+                    <label>Price</label>
+                    <div class="slds-align_absolute-center">
+                        <span class="slds-m-right_small">0</span>
+                        <input type="range" min="1" max="100000" value={sliderValue} class="slider" id="myRange" onchange={handleSliderChanges}/>
+                        <span class="slds-m-left_small">{sliderValue}</span>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4 slds-align_absolute-center">
+                    <lightning-combobox
+                        name="progress"
+                        label="Rate"
+                        value={selectedRate}
+                        placeholder="Select Rate"
+                        options={rateOptions}
+                        onchange={handleComboboxChanges} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-3 slds-text-align_center" onkeyup={handleKeyUp}>
+                    <div class="search">
+                        <input type="search" id="search" placeholder="Search..."/>
+                        <i class="fa fa-search">
+                            <img width="40px" src={searchIcon}/>
+                        </i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slds-text-align_center">
+                <lightning-layout multiple-rows>
+                    <template for:each={products} for:item='product'>
+                        <div key ={product.id} class="slds-m-around_x-small product-card">
+                            <lightning-layout-item size="4">
+                                <div class="product-item" style="height: 300px; width: 200px;" id={product.id} onclick={handleOnProductClick}>
+                                    <div >
+                                        <img id={product.id} class="product-image" src={product.imageUrl}/>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <p id={product.id}>{product.name}</p>
+                                        <lightning-formatted-number id={product.id} value={product.price} maximum-fraction-digits="2"></lightning-formatted-number>
+                                        <p id={product.id}>{product.year}</p>
+                                    </div> 
+                                </div>
+                            </lightning-layout-item>
+                        </div>
+                    </template>
+                </lightning-layout>
+            </div>
+            <div if:true={isAllProducts} class="slds-text-align_center">
+                <div class="slds-text-heading_medium">It's all products!</div>
+            </div>
+            <div if:false={isAllProducts} class="slds-text-align_center">
+                <img width="200" src={spinner}/>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-4 slds-box slds-text-align_right" style="height: 400px;">
+            <c-contact-us></c-contact-us>
+        </div>
+    </div>
+</template>

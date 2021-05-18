@@ -1,0 +1,33 @@
+<template>
+        <div class="slds-text-heading_medium "><b>Связаться с нами</b></div>
+        <form action="https://webto.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8" method="POST">
+            <input type=hidden name="orgid" value="00D5g000004jmN1">
+            <input type=hidden name="retURL" value="https://car-dream-developer-edition.ap24.force.com/">
+            <br>
+            <div if:true={isFormError} style="color:red;">{errorMessage}</div>
+            <label for="email" >Email<span style="color:red;">*</span></label><br>
+            <input data-id="email" id="email" maxlength="80" name="email" size="20" type="text" required onchange={emailValid}/>
+            <br>
+            <label for="reason" >Категория<span style="color:red;">*</span></label><br>
+            <select data-id="reason" id="reason" name="reason" required onchange={setPriority}>
+                <option value="">--None--</option>
+                <option value="Financial Claim" >Financial Claim</option>
+                <option value="General Question">General Question</option>
+                <option value="Insurance">Insurance</option>
+            </select>
+            <br>
+            <div class="slds-hide">
+                <label for="priority">Priority</label><br>
+                <select data-id="priority" id="priority" name="priority">
+                    <option value="">--None--</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select><br>
+            </div>
+            <label for="description">Описание обращения</label><br>
+            <textarea name="description" required></textarea><br>     
+            <input type="hidden"  id="external" name="external" value="1" /><br>   
+            <button type="submit">Отправить</button>
+        </form>
+</template>

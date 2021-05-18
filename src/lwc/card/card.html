@@ -1,0 +1,38 @@
+<template>
+    <c-modal-window>
+        <div slot="header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                <lightning-icon icon-name="utility:close"
+                    alternative-text="close"
+                    variant="inverse"
+                    size="small" ></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{selectedProduct.Name}</h2>
+        </div>
+        <div slot="content">
+            <div if:false={isLoadedProduct} class="slds-text-align_center">
+                <img width="200" src={spinner}/>
+            </div>
+            <div if:true={isLoadedProduct}>
+                <div class="slds-align_absolute-center slds-size_3-of-4">
+                    <lightning-carousel>
+                        <template for:each={images} for:item="image">
+                            <lightning-carousel-image
+                                key={image}
+                                src={image}
+                                href = "javascript:void(0);">
+                            </lightning-carousel-image>
+                        </template>
+                    </lightning-carousel>
+                </div>
+                <div class="slds-text-heading_medium slds-grid slds-gutter slds-m-around_small">
+                    <div class="slds-col slds-text-align_left">Year: {selectedProduct.Year__c}</div>
+                    <div class="slds-col slds-text-align_right">Price: {selectedProduct.Price__c}</div>
+                </div>
+                <div class="slds-text-heading_medium slds-m-around_small slds-text-align_center">Description</div>
+                <div class="slds-box">{selectedProduct.Description}</div>
+            </div>
+        </div>
+    </c-modal-window>
+</template>
