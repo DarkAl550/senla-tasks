@@ -31,6 +31,10 @@ export default class DuplicatedCases extends LightningElement {
         this.isSpinner = false;
         this.duplicatedCases = data;
     }
+    haldleChild(event){
+        this.isModalOpen = event.detail.isModalOpen;
+    }
+
     handleAction(event){
         let action = event.detail.action;
         switch (action.name) {
@@ -62,24 +66,7 @@ export default class DuplicatedCases extends LightningElement {
                 break;
         }
     }
-    merging(){
-        this.isSpinner = true;
-        if(this.isSendNotification){
-            sendBellNotification({ownerId:this.ownerId, caseNumber:this.caseNumber, caseId:this.childId});
-        }
-        mergingCases({ parentId: this.recordId, childId: this.childId})
-        .then(result =>{
-            this.isSpinner = false;
-            refreshApex(this.duplicatedCases);
-            this.isModalOpen = false;
-        })
-        .catch(error =>{
-            this.error = error;
-        })
-    }
-    handleCheckboxValue(event){
-        this.isSendNotification = event.target.checked;
-    }
+    
     closeModal(){
         this.isModalOpen = false;
     }

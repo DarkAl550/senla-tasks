@@ -20,7 +20,8 @@ export default class CardreamCommunityContent extends LightningElement {
     @track images = [];
     @track isLoadedProduct = false;
     @track isFormError = false;
-    @track errorMessage;
+    @track productId;
+    @track cardContent = 'TEST';
     spinner = SPINNER;
     searchIcon = SEARCHICON;
     error;
@@ -96,6 +97,7 @@ export default class CardreamCommunityContent extends LightningElement {
     }
     handleOnProductClick(event){
         let productId = event.target.id;
+        this.productId = productId.split("-")[0];
         this.images = [];
         this.isLoadedProduct = false;
         this.isModalOpen = true;
@@ -114,6 +116,7 @@ export default class CardreamCommunityContent extends LightningElement {
                 }
             }
             this.isLoadedProduct = true;
+            this.cardContent = '<p>TEst</p>';
         })
         .catch(error =>{
             this.error = error;
@@ -126,8 +129,12 @@ export default class CardreamCommunityContent extends LightningElement {
             this.getProductsFromApex();
         }
     }
-    closeModal(){
-        this.isModalOpen = false;
+    
+    haldleChild(event){
+        this.isModalOpen = event.detail.isModalOpen;
+    }
+    handleCardContent(event){
+        this.cardContent = event.detail.content;
     }
     setPriority(){
         let reason = this.template.querySelector('[data-id="reason"]');
